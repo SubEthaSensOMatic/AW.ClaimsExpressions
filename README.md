@@ -34,3 +34,18 @@ Primary         -> 'exists' Claim
 * `[scope] contains 'read'` — checks if the `scope` claim contains the substring `read`.
 * `not [verified] equals 'true'` — checks if the `verified` claim is not equal to `true`.
 * `([role] equals 'admin') and ([email] contains 'example.com')` — combines multiple conditions with `and`.
+
+## Using the compiler
+
+The main entry point is the Compiler `AW.ClaimsExpressions.Compiler`, which compiles an expression string into the validator delegate.
+
+```
+var expression = "[email] endsWith '@example.com' and [role] equals 'admin'";
+var validator = await Compiler.Compile(expression);
+
+ClaimsPrincipal user = /* obtain the ClaimsPrincipal */;
+bool isValid = validator(user);
+```
+
+
+
