@@ -47,5 +47,60 @@ ClaimsPrincipal user = /* obtain the ClaimsPrincipal */;
 bool isValid = validator(user);
 ```
 
+## ASP.NET Core integration
 
+### Configure claims expressions
 
+To secure your endpoints, define your claims validation expressions in your configuration (e.g., `appsettings.json`):
+
+```
+{
+  ...
+
+  "ClaimsPolicies": {
+    "AdminPolicy": "[role] equals 'admin'",
+    "RegionPolicy": "[region] equals 'US'",
+    "AdvancedPolicy": "[role] equals 'admin' and [region] equals 'US'"
+  },
+
+  ...
+}
+```
+
+### Register services
+
+In your ASP.NET Core project, register the services provided by this library in `Startup.cs` (or `Program.cs`):
+
+```
+public void ConfigureServices(IServiceCollection services)
+{
+    // Register JWT claim expression services
+    services.AddClaimsExpressions();
+
+    services.AddControllers();
+
+    // Configure JWT authorization
+    services.AddAuthentication("Bearer")
+            .AddJwtBearer(options => { /* JWT settings */ });
+}
+```
+
+### Applying authorization to endpoints
+
+Use the `AuthorizeByClaimsExpression` attribute to apply the claims validation policy to your controller actions:
+
+```
+[AuthorizeByClaimsExpression("ClaimsPolicies:AdminPolicy")]
+[HttpGet("admin-only")]
+public IActionResult AdminOnly()
+{
+    return Ok("Welcome, admin!");
+}
+
+[AuthorizeByClaimsExpression("ClaimsPolicies:RegionPolicy")]
+[HttpGet("only-us")]
+public IActionResult OnlyUsRegion()
+{
+    return Ok("Welcome from the US!");
+}
+```
