@@ -1,6 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Options;
+using System;
+using System.Threading.Tasks;
 
 namespace AW.ClaimsExpressions.AspNetCore;
 
