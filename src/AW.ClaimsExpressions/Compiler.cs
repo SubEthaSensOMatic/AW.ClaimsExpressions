@@ -71,6 +71,23 @@ public static class Compiler
         return stringToken.Value[1..^1].Replace(@"\\", @"\").Replace(@"\'", "'");
     }
 
+    private static long GetIntFromToken(Token intToken)
+    {
+        if (intToken.Type != TokenTypes.Integer)
+            throw new InvalidOperationException($"Token has to be of type '{TokenTypes.Integer}'.");
+
+        return long.Parse(intToken.Value);
+    }
+
+    private static double GetFloatFromToken(Token doubleToken)
+    {
+        if (doubleToken.Type != TokenTypes.Float)
+            throw new InvalidOperationException($"Token has to be of type '{TokenTypes.Float}'.");
+
+        return double.Parse(doubleToken.Value);
+    }
+
+
     private static void BuildDotNetExpression(Node node, StringBuilder code)
     {
         if (node is ExistsNode existsNode)
@@ -87,8 +104,102 @@ public static class Compiler
         else if (node is EqualsNode equalsNode)
         {
             var claim = GetClaimFromToken(equalsNode.Claim);
-            var value = GetStringFromToken(equalsNode.Value);
-            code.Append($"AW.ClaimsExpressions.ClaimsPrincipalExtensions.AnyClaimThatEquals(p, \"{claim}\",\"{value}\")");
+
+            if (equalsNode.Value.Type == TokenTypes.Integer)
+            {
+                var value = GetIntFromToken(equalsNode.Value);
+                code.Append($"AW.ClaimsExpressions.ClaimsPrincipalExtensions.AnyClaimThatEquals(p, \"{claim}\",{value})");
+            }
+            else if (equalsNode.Value.Type == TokenTypes.Float)
+            {
+                var value = GetFloatFromToken(equalsNode.Value);
+                code.Append($"AW.ClaimsExpressions.ClaimsPrincipalExtensions.AnyClaimThatEquals(p, \"{claim}\",{value})");
+            }
+            else
+            {
+                var value = GetStringFromToken(equalsNode.Value);
+                code.Append($"AW.ClaimsExpressions.ClaimsPrincipalExtensions.AnyClaimThatEquals(p, \"{claim}\",\"{value}\")");
+            }
+        }
+        else if (node is GreaterNode greaterNode)
+        {
+            var claim = GetClaimFromToken(greaterNode.Claim);
+
+            if (greaterNode.Value.Type == TokenTypes.Integer)
+            {
+                var value = GetIntFromToken(greaterNode.Value);
+                code.Append($"AW.ClaimsExpressions.ClaimsPrincipalExtensions.AnyClaimThatIsGeaterThan(p, \"{claim}\",{value})");
+            }
+            else if (greaterNode.Value.Type == TokenTypes.Float)
+            {
+                var value = GetFloatFromToken(greaterNode.Value);
+                code.Append($"AW.ClaimsExpressions.ClaimsPrincipalExtensions.AnyClaimThatIsGeaterThan(p, \"{claim}\",{value})");
+            }
+            else
+            {
+                var value = GetStringFromToken(greaterNode.Value);
+                code.Append($"AW.ClaimsExpressions.ClaimsPrincipalExtensions.AnyClaimThatIsGeaterThan(p, \"{claim}\",\"{value}\")");
+            }
+        }
+        else if (node is GreaterOrEqualNode greaterOrEqualNode)
+        {
+            var claim = GetClaimFromToken(greaterOrEqualNode.Claim);
+
+            if (greaterOrEqualNode.Value.Type == TokenTypes.Integer)
+            {
+                var value = GetIntFromToken(greaterOrEqualNode.Value);
+                code.Append($"AW.ClaimsExpressions.ClaimsPrincipalExtensions.AnyClaimThatIsGeaterThanOrEqual(p, \"{claim}\",{value})");
+            }
+            else if (greaterOrEqualNode.Value.Type == TokenTypes.Float)
+            {
+                var value = GetFloatFromToken(greaterOrEqualNode.Value);
+                code.Append($"AW.ClaimsExpressions.ClaimsPrincipalExtensions.AnyClaimThatIsGeaterThanOrEqual(p, \"{claim}\",{value})");
+            }
+            else
+            {
+                var value = GetStringFromToken(greaterOrEqualNode.Value);
+                code.Append($"AW.ClaimsExpressions.ClaimsPrincipalExtensions.AnyClaimThatIsGeaterThanOrEqual(p, \"{claim}\",\"{value}\")");
+            }
+        }
+        else if (node is LessNode lessNode)
+        {
+            var claim = GetClaimFromToken(lessNode.Claim);
+
+            if (lessNode.Value.Type == TokenTypes.Integer)
+            {
+                var value = GetIntFromToken(lessNode.Value);
+                code.Append($"AW.ClaimsExpressions.ClaimsPrincipalExtensions.AnyClaimThatIsLessThan(p, \"{claim}\",{value})");
+            }
+            else if (lessNode.Value.Type == TokenTypes.Float)
+            {
+                var value = GetFloatFromToken(lessNode.Value);
+                code.Append($"AW.ClaimsExpressions.ClaimsPrincipalExtensions.AnyClaimThatIsLessThan(p, \"{claim}\",{value})");
+            }
+            else
+            {
+                var value = GetStringFromToken(lessNode.Value);
+                code.Append($"AW.ClaimsExpressions.ClaimsPrincipalExtensions.AnyClaimThatIsLessThan(p, \"{claim}\",\"{value}\")");
+            }
+        }
+        else if (node is LessOrEqualNode lessNodeOrEqual)
+        {
+            var claim = GetClaimFromToken(lessNodeOrEqual.Claim);
+
+            if (lessNodeOrEqual.Value.Type == TokenTypes.Integer)
+            {
+                var value = GetIntFromToken(lessNodeOrEqual.Value);
+                code.Append($"AW.ClaimsExpressions.ClaimsPrincipalExtensions.AnyClaimThatIsLessThanOrEqual(p, \"{claim}\",{value})");
+            }
+            else if (lessNodeOrEqual.Value.Type == TokenTypes.Float)
+            {
+                var value = GetFloatFromToken(lessNodeOrEqual.Value);
+                code.Append($"AW.ClaimsExpressions.ClaimsPrincipalExtensions.AnyClaimThatIsLessThanOrEqual(p, \"{claim}\",{value})");
+            }
+            else
+            {
+                var value = GetStringFromToken(lessNodeOrEqual.Value);
+                code.Append($"AW.ClaimsExpressions.ClaimsPrincipalExtensions.AnyClaimThatIsLessThanOrEqual(p, \"{claim}\",\"{value}\")");
+            }
         }
         else if (node is StartsWithNode startsWithNode)
         {

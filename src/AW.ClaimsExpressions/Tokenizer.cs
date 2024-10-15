@@ -25,8 +25,9 @@ public static class Tokenizer
                 
                 if (match != null && match.Success)
                 {
-                    tokens.Add(new Token(match.Value, tokenType, position, match.Length));
-                    position += match.Length;
+                    var token = match.Groups["token"].Value;
+                    tokens.Add(new Token(token, tokenType, position, token.Length));
+                    position += token.Length;
                     matched = true;
                     break;
                 }

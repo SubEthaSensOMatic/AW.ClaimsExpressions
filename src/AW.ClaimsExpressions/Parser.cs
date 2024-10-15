@@ -8,6 +8,14 @@ namespace AW.ClaimsExpressions
 
     public record EqualsNode(Token Claim, Token Value) : Node;
 
+    public record GreaterNode(Token Claim, Token Value) : Node;
+
+    public record GreaterOrEqualNode(Token Claim, Token Value) : Node;
+
+    public record LessNode(Token Claim, Token Value) : Node;
+
+    public record LessOrEqualNode(Token Claim, Token Value) : Node;
+
     public record ContainsNode(Token Claim, Token Value) : Node;
 
     public record StartsWithNode(Token Claim, Token Value) : Node;
@@ -30,8 +38,19 @@ namespace AW.ClaimsExpressions
     /// AndExpression   -> NotExpression ('and' NotExpression)*
     /// NotExpression   -> 'not' NotExpression | Primary
     /// Claim           -> '[' text ']'
-    /// String          -> ''' text '''
-    /// Primary         -> 'exists' Claim | Claim 'equals' String | Claim 'contains' String | Claim 'startsWith' String | Claim 'endsWith' String | '(' Expression ')'
+    /// String          -> '\'' text '\''
+    /// Integer         -> [+-]?[0-9]+
+    /// Float           -> [+-]?([0-9]*[.])?[0-9]+
+    /// Primary         -> 'exists' Claim 
+    ///                  | Claim '=' String | Integer | Float
+    ///                  | Claim '>' String | Integer | Float
+    ///                  | Claim '<' String | Integer | Float
+    ///                  | Claim '>=' String | Integer | Float
+    ///                  | Claim '<=' String | Integer | Float
+    ///                  | Claim 'contains' String 
+    ///                  | Claim 'startsWith' String 
+    ///                  | Claim 'endsWith' String 
+    ///                  | '(' Expression ')'
     /// </summary>
     public class Parser
     {
@@ -137,9 +156,100 @@ namespace AW.ClaimsExpressions
             }
             else if (TryEat(TokenTypes.Claim, out var claimToken))
             {
-                if (TryEat(TokenTypes.Equals, out _))
+                if (TryEat(TokenTypes.Equals, out var equalsToken))
                 {
-                    node = new EqualsNode(claimToken, Eat(TokenTypes.String));
+                    if (TryEat(TokenTypes.Integer, out var intToken))
+                    {
+                        node = new EqualsNode(claimToken, intToken);
+                    }
+                    else if (TryEat(TokenTypes.Float, out var floatToken))
+                    {
+                        node = new EqualsNode(claimToken, floatToken);
+                    }
+                    else if (TryEat(TokenTypes.String, out var stringToken))
+                    {
+                        node = new EqualsNode(claimToken, stringToken);
+                    }
+                    else
+                    {
+                        throw new Exception($"Only tokens of type '{TokenTypes.String}', '{TokenTypes.Integer}' or '{TokenTypes.Float}' are allowed after token of type '{TokenTypes.Equals}' at position {equalsToken.Start + equalsToken.Length + 1}.");
+                    }
+                }
+                else if (TryEat(TokenTypes.Greater, out var greaterToken))
+                {
+                    if (TryEat(TokenTypes.Integer, out var intToken))
+                    {
+                        node = new GreaterNode(claimToken, intToken);
+                    }
+                    else if (TryEat(TokenTypes.Float, out var floatToken))
+                    {
+                        node = new GreaterNode(claimToken, floatToken);
+                    }
+                    else if (TryEat(TokenTypes.String, out var stringToken))
+                    {
+                        node = new GreaterNode(claimToken, stringToken);
+                    }
+                    else
+                    {
+                        throw new Exception($"Only tokens of type '{TokenTypes.String}', '{TokenTypes.Integer}' or '{TokenTypes.Float}' are allowed after token of type '{TokenTypes.Equals}' at position {greaterToken.Start + greaterToken.Length + 1}.");
+                    }
+                }
+                else if (TryEat(TokenTypes.GreaterOrEqual, out var greaterOrEqual))
+                {
+                    if (TryEat(TokenTypes.Integer, out var intToken))
+                    {
+                        node = new GreaterOrEqualNode(claimToken, intToken);
+                    }
+                    else if (TryEat(TokenTypes.Float, out var floatToken))
+                    {
+                        node = new GreaterOrEqualNode(claimToken, floatToken);
+                    }
+                    else if (TryEat(TokenTypes.String, out var stringToken))
+                    {
+                        node = new GreaterOrEqualNode(claimToken, stringToken);
+                    }
+                    else
+                    {
+                        throw new Exception($"Only tokens of type '{TokenTypes.String}', '{TokenTypes.Integer}' or '{TokenTypes.Float}' are allowed after token of type '{TokenTypes.Equals}' at position {greaterOrEqual.Start + greaterOrEqual.Length + 1}.");
+                    }
+                }
+                else if (TryEat(TokenTypes.Less, out var lessToken))
+                {
+                    if (TryEat(TokenTypes.Integer, out var intToken))
+                    {
+                        node = new LessNode(claimToken, intToken);
+                    }
+                    else if (TryEat(TokenTypes.Float, out var floatToken))
+                    {
+                        node = new LessNode(claimToken, floatToken);
+                    }
+                    else if (TryEat(TokenTypes.String, out var stringToken))
+                    {
+                        node = new LessNode(claimToken, stringToken);
+                    }
+                    else
+                    {
+                        throw new Exception($"Only tokens of type '{TokenTypes.String}', '{TokenTypes.Integer}' or '{TokenTypes.Float}' are allowed after token of type '{TokenTypes.Equals}' at position {lessToken.Start + lessToken.Length + 1}.");
+                    }
+                }
+                else if (TryEat(TokenTypes.LessOrEqual, out var lessOrEqual))
+                {
+                    if (TryEat(TokenTypes.Integer, out var intToken))
+                    {
+                        node = new LessOrEqualNode(claimToken, intToken);
+                    }
+                    else if (TryEat(TokenTypes.Float, out var floatToken))
+                    {
+                        node = new LessOrEqualNode(claimToken, floatToken);
+                    }
+                    else if (TryEat(TokenTypes.String, out var stringToken))
+                    {
+                        node = new LessOrEqualNode(claimToken, stringToken);
+                    }
+                    else
+                    {
+                        throw new Exception($"Only tokens of type '{TokenTypes.String}', '{TokenTypes.Integer}' or '{TokenTypes.Float}' are allowed after token of type '{TokenTypes.Equals}' at position {lessOrEqual.Start + lessOrEqual.Length + 1}.");
+                    }
                 }
                 else if (TryEat(TokenTypes.Contains, out _))
                 {

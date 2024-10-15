@@ -5,7 +5,7 @@ This project provides a simple Domain-Specific Language (DSL) for validating JWT
 ## Features
 
 * Supports logical operators (and, or, not) for combining multiple validation rules.
-* Checks for claims using operators like equals, contains, startsWith, and endsWith.
+* Checks for claims using operators like =, <, >, <=, >=, contains, startsWith, and endsWith.
 * Compiles validation rules into C# functions.
 
 ## Grammar
@@ -19,8 +19,14 @@ AndExpression   -> NotExpression ('and' NotExpression)*
 NotExpression   -> 'not' NotExpression | Primary
 Claim           -> '[' text ']'
 String          -> '\'' text '\''
+Integer         -> [+-]?[0-9]+
+Float           -> [+-]?([0-9]*[.])?[0-9]+
 Primary         -> 'exists' Claim 
-                 | Claim 'equals' String 
+                 | Claim '=' String | Integer | Float
+                 | Claim '>' String | Integer | Float
+                 | Claim '<' String | Integer | Float
+                 | Claim '>=' String | Integer | Float
+                 | Claim '<=' String | Integer | Float
                  | Claim 'contains' String 
                  | Claim 'startsWith' String 
                  | Claim 'endsWith' String 
@@ -30,10 +36,10 @@ Primary         -> 'exists' Claim
 ## Example expressions
 
 * `exists [is_admin]` — checks if the `is_admin` claim exists.
-* `[role] equals 'admin'` — checks if the `role` claim equals `admin`.
+* `[role] = 'admin'` — checks if the `role` claim equals `admin`.
 * `[scope] contains 'read'` — checks if the `scope` claim contains the substring `read`.
-* `not [verified] equals 'true'` — checks if the `verified` claim is not equal to `true`.
-* `([role] equals 'admin') and ([email] contains 'example.com')` — combines multiple conditions with `and`.
+* `not [verified] = 'true'` — checks if the `verified` claim is not equal to `true`.
+* `([role] = 'admin') and ([email] contains 'example.com')` — combines multiple conditions with `and`.
 
 ## Using the compiler
 
@@ -58,9 +64,10 @@ To secure your endpoints, define your claims validation expressions in your conf
   ...
 
   "ClaimsPolicies": {
-    "AdminPolicy": "[role] equals 'admin'",
-    "RegionPolicy": "[region] equals 'US'",
-    "AdvancedPolicy": "[role] equals 'admin' and [region] equals 'US'"
+    "AdminPolicy": "[role] = 'admin'",
+    "RegionPolicy": "[region] = 'US'",
+    "AdultPolicy": "[age] >= 18",
+    "AdvancedPolicy": "[role] = 'admin' and [region] = 'US'"
   },
 
   ...
@@ -102,5 +109,13 @@ public IActionResult AdminOnly()
 public IActionResult OnlyUsRegion()
 {
     return Ok("Welcome from the US!");
+}
+
+
+[AuthorizeByClaimsExpression("ClaimsPolicies:AdultPolicy")]
+[HttpGet("adult-only")]
+public IActionResult AdultOnly()
+{
+    return Ok("Welcome, adult!");
 }
 ```

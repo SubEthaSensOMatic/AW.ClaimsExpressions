@@ -24,7 +24,7 @@ public class ValidatorTests
     {
         var principal = CreatePrincipal(new Claim("role", "admin"));
 
-        var validator = await Compiler.Compile("[role] equals 'admin'");
+        var validator = await Compiler.Compile("[role] = 'admin'");
 
         Assert.IsTrue(validator(principal));
     }
@@ -77,7 +77,7 @@ public class ValidatorTests
             new Claim("email", "user@example.com")
         );
 
-        var validator = await Compiler.Compile("[role] equals 'admin' and [email] contains 'example'");
+        var validator = await Compiler.Compile("[role] = 'admin' and [email] contains 'example'");
 
         Assert.IsTrue(validator(principal));
     }
@@ -90,7 +90,59 @@ public class ValidatorTests
             new Claim("email", "user@example.com")
         );
 
-        var validator = await Compiler.Compile("not [role] equals 'admin' and [email] startsWith 'user'");
+        var validator = await Compiler.Compile("not [role] = 'admin' and [email] startsWith 'user'");
+
+        Assert.IsTrue(validator(principal));
+    }
+
+    [TestMethod]
+    public async Task Test_GreaterThan_Integer()
+    {
+        var principal = CreatePrincipal(
+            new Claim("role", "user"),
+            new Claim("age", "19")
+        );
+
+        var validator = await Compiler.Compile("[age] > 18 and [role] = 'user'");
+
+        Assert.IsTrue(validator(principal));
+    }
+
+    [TestMethod]
+    public async Task Test_GreaterThanOrEqual_Integer()
+    {
+        var principal = CreatePrincipal(
+            new Claim("role", "user"),
+            new Claim("age", "18")
+        );
+
+        var validator = await Compiler.Compile("[age] >= 18 and [role] = 'user'");
+
+        Assert.IsTrue(validator(principal));
+    }
+
+    [TestMethod]
+    public async Task Test_LessThan_Integer()
+    {
+        var principal = CreatePrincipal(
+            new Claim("role", "user"),
+            new Claim("level", "-1")
+        );
+
+        var validator = await Compiler.Compile("[level] < 0 and [role] = 'user'");
+
+        Assert.IsTrue(validator(principal));
+    }
+
+    [TestMethod]
+    public async Task Test_LessThanOrEqual_Integer()
+    {
+        var principal = CreatePrincipal(
+            new Claim("role", "user"),
+            new Claim("level", "-2")
+        );
+
+        var validator = await Compiler.Compile("[level] <= -2 and [role] = 'user'");
 
         Assert.IsTrue(validator(principal));
     }

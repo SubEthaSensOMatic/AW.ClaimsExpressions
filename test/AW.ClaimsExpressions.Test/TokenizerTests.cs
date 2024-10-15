@@ -18,7 +18,15 @@ public class TokenizerTests
             new(" ", TokenTypes.Whitespace, 0, 1),
             new("not", TokenTypes.Not, 0, 3),
             new(" ", TokenTypes.Whitespace, 0, 1),
-            new("equals", TokenTypes.Equals, 0, 6),
+            new("=", TokenTypes.Equals, 0, 1),
+            new(" ", TokenTypes.Whitespace, 0, 1),
+            new(">", TokenTypes.Greater, 0, 1),
+            new(" ", TokenTypes.Whitespace, 0, 1),
+            new(">=", TokenTypes.GreaterOrEqual, 0, 2),
+            new(" ", TokenTypes.Whitespace, 0, 1),
+            new("<", TokenTypes.Less, 0, 1),
+            new(" ", TokenTypes.Whitespace, 0, 1),
+            new("<=", TokenTypes.LessOrEqual, 0, 2),
             new(" ", TokenTypes.Whitespace, 0, 1),
             new("contains", TokenTypes.Contains, 0, 8),
             new(" ", TokenTypes.Whitespace, 0, 1),
@@ -29,10 +37,18 @@ public class TokenizerTests
             new("(", TokenTypes.LeftParenthesis, 0, 1),
             new(")", TokenTypes.RightParenthesis, 0, 1),
             new(" ", TokenTypes.Whitespace, 0, 1),
-            new("exists", TokenTypes.Exists, 0, 6)
+            new("exists", TokenTypes.Exists, 0, 6),
+            new(" ", TokenTypes.Whitespace, 0, 1),
+            new("-0.123", TokenTypes.Float, 0, 6),
+            new(" ", TokenTypes.Whitespace, 0, 1),
+            new("+1000", TokenTypes.Integer, 0, 5),
+            new(" ", TokenTypes.Whitespace, 0, 1),
+            new("2000", TokenTypes.Integer, 0, 4),
+            new(" ", TokenTypes.Whitespace, 0, 1),
+            new("1.456", TokenTypes.Float, 0, 5)
         };
 
-        var expression = "[roles]   'string' or and not equals contains startsWith endsWith () exists";
+        var expression = "[roles]   'string' or and not = > >= < <= contains startsWith endsWith () exists -0.123 +1000 2000 1.456";
 
         var resultTokens = Tokenizer.Tokenize(expression);
 
