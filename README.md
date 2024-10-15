@@ -1,6 +1,6 @@
 # AW.ClaimsExpressions
 
-This project provides a simple Domain-Specific Language (DSL) for validating JWT claims. It defines an expressive grammar that allows users to create complex claim validation rules using logical operators (and, or, not) and claim checks (e.g., exists, equals, contains, startsWith, endsWith).
+This project provides a simple Domain-Specific Language (DSL) for validating JWT claims. It defines an expressive grammar that allows users to create complex claim validation rules using logical operators (and, or, not) and claim checks (e.g., exists, =, <, <=, >, >=, contains, startsWith, endsWith).
 
 ## Features
 
@@ -46,7 +46,7 @@ Primary         -> 'exists' Claim
 The main entry point is the Compiler `AW.ClaimsExpressions.Compiler`, which compiles an expression string into the validator delegate.
 
 ```
-var expression = "[email] endsWith '@example.com' and [role] equals 'admin'";
+var expression = "[email] endsWith '@example.com' and [role] = 'admin'";
 var validator = await Compiler.Compile(expression);
 
 ClaimsPrincipal user = /* obtain the ClaimsPrincipal */;
