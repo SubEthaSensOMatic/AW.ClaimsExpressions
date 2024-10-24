@@ -1,5 +1,7 @@
 
 using AW.ClaimsExpressions.AspNetCore;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace AW.ClaimsExpressions.TestServer
 {
@@ -16,6 +18,27 @@ namespace AW.ClaimsExpressions.TestServer
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
+
+            // Allow all claims 
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
+
+            builder.Services
+                .AddAuthentication()
+                .AddJwtBearer(JwtBearerDefaults.AuthenticationScheme, options =>
+                {
+                    options.Authority = builder.Configuration["Jwt:Authority"];
+                    options.MetadataAddress = builder.Configuration["Jwt:MetadataAddress"] ?? string.Empty;
+
+                    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+                    {
+                        ValidAudience = builder.Configuration["Jwt:Audience"],
+                        ValidIssuer = $"{builder.Configuration["Jwt:Issuer"]}",
+                        ValidateIssuer = true,
+                        ValidateAudience = true,
+                        ValidateLifetime = true,
+                        ValidateIssuerSigningKey = true
+                    };
+                });
 
             var app = builder.Build();
 

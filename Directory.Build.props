@@ -1,0 +1,11 @@
+<Project>
+	<PropertyGroup>
+		<Version>0.0.0</Version>
+		<TargetFramework>net8.0</TargetFramework>
+		<RepositoryType>git</RepositoryType>
+		<RepositoryUrl>https://github.com/SubEthaSensOMatic/AW.ClaimsExpressions.git</RepositoryUrl>
+		<PackageProjectUrl>https://github.com/SubEthaSensOMatic/AW.ClaimsExpressions</PackageProjectUrl>
+		<PackageTags>JWT;Claims;OAuth;OIDC;ASP.NET Core;Authorization</PackageTags>
+		<Company>Ajid Welzel</Company>
+	</PropertyGroup>
+</Project>

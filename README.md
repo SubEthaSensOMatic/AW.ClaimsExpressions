@@ -1,14 +1,15 @@
 # AW.ClaimsExpressions
 
-This project provides a simple Domain-Specific Language (DSL) for validating JWT claims. It defines an expressive grammar that allows users to create complex claim validation rules using logical operators (and, or, not) and claim checks (e.g., exists, =, <, <=, >, >=, contains, startsWith, endsWith).
+**AW.ClaimsExpressions** is a powerful library that offers a Domain-Specific Language (DSL) for dynamically validating JWT claims. It allows for the creation of expressive and flexible validation rules using a concise grammar. With this library, developers can define complex claim validation logic through logical operators and various claim checks, all without needing to modify code.
 
 ## Features
 
-* Supports logical operators (and, or, not) for combining multiple validation rules.
-* Checks for claims using operators like =, <, >, <=, >=, contains, startsWith, and endsWith.
-* Compiles validation rules into C# functions.
+* **Configurable validation rules:** Easily configure and update claim validation policies, without the need for code changes, making the solution adaptable to evolving requirements.
+* **Logical operators:** Supports `and`, `or`, and `not` for combining multiple conditions, enabling the creation of sophisticated rules.
+* **Flexible claim checks:** Perform checks for claims using operators like `=`, `<`, `>` , `<=`, `>=`, `contains`, `startsWith`, and `endsWith`.
+* **Compilation to C# Functions:** Converts DSL expressions into efficient C# functions, making claim validation both powerful and fast.
 
-## Grammar
+## Grammar overview
 
 The DSL is built around the following grammar:
 
@@ -53,12 +54,13 @@ ClaimsPrincipal user = /* obtain the ClaimsPrincipal */;
 bool isValid = validator(user);
 ```
 
-## ASP.NET Core integration
+## Seamless ASP.NET Core integration
 
 ### Configure claims expressions
 
-To secure your endpoints, define your claims validation expressions in your configuration (e.g., `appsettings.json`):
+**AW.ClaimsExpressions** has the ability to support dynamic, configurable claim validation. Validation rules can be defined in external configuration files (like appsettings.json) or environment variables, allowing for easy updates without altering the underlying codebase.
 
+For example, define policies in your configuration file:
 ```
 {
   ...
@@ -76,7 +78,7 @@ To secure your endpoints, define your claims validation expressions in your conf
 
 ### Register services
 
-In your ASP.NET Core project, register the services provided by this library in `Startup.cs` (or `Program.cs`):
+Integrating AW.ClaimsExpressions into an ASP.NET Core project is straightforward. Register the services provided by this library and configure JWT authentication in `Startup.cs` (or `Program.cs`):
 
 ```
 public void ConfigureServices(IServiceCollection services)
@@ -94,7 +96,7 @@ public void ConfigureServices(IServiceCollection services)
 
 ### Applying authorization to endpoints
 
-Use the `AuthorizeByClaimsExpression` attribute to apply the claims validation policy to your controller actions:
+Apply the validation policies directly to your controllers with the `[AuthorizeByClaimsExpression]` attribute:
 
 ```
 [AuthorizeByClaimsExpression("ClaimsPolicies:AdminPolicy")]
@@ -119,3 +121,29 @@ public IActionResult AdultOnly()
     return Ok("Welcome, adult!");
 }
 ```
+
+### Applying authorization to services
+
+Use the `IAuthorizeByClaimsExpression` service to apply the claims validation policy to your services:
+
+```
+public class SomeService
+{
+    private readonly IAuthorizeByClaimsExpression _authorize;
+
+    public SomeService(IAuthorizeByClaimsExpression authorize)
+        => _authorize = authorize;
+
+    public Task DoSomething()
+    {
+        ClaimsPrincipal user = /* obtain the ClaimsPrincipal */;
+
+        // Check user is admin
+        if (_authorize.IsAuthorized(user, "ClaimsPolicies:AdminPolicy") == false)
+            throw Exception("Not authorized!");
+
+        ...
+    }
+}
+```
+

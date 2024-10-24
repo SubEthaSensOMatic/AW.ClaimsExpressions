@@ -19,10 +19,24 @@ namespace AW.ClaimsExpressions.TestServer.Controllers
             _logger = logger;
         }
 
-        [AuthorizeByClaimsExpression("IS_ADMIN_CLAIMS_EXPRESSION")]
-        [HttpGet(Name = "GetWeatherForecast")]
+        [AuthorizeByClaimsExpression("ClaimsPolicies:IsAdmin")]
+        [HttpGet]
         public IEnumerable<WeatherForecast> Get()
         {
+            return Enumerable.Range(1, 5).Select(index => new WeatherForecast
+            {
+                Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
+                TemperatureC = Random.Shared.Next(-20, 55),
+                Summary = Summaries[Random.Shared.Next(Summaries.Length)]
+            })
+            .ToArray();
+        }
+
+        [HttpGet("some_data")]
+        public async Task<IEnumerable<WeatherForecast>> GetSomeData([FromServices] IAuthorizeByClaimsExpression auth)
+        {
+            var isAdmin = await auth.IsAuthorized(User, "ClaimsPolicies:IsAdmin");
+
             return Enumerable.Range(1, 5).Select(index => new WeatherForecast
             {
                 Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),

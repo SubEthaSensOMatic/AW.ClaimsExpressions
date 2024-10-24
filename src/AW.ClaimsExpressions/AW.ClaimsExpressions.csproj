@@ -1,15 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
-    <Company>Ajid Welzel</Company>
-    <Description>This project provides a simple Domain-Specific Language (DSL) for validating JWT claims. It defines an expressive grammar that allows users to create complex claim validation rules using logical operators (and, or, not) and claim checks (e.g., exists, equals, contains, startsWith, endsWith).</Description>
+    <Description>AW.ClaimsExpressions is a powerful library that offers a Domain-Specific Language (DSL) for dynamically validating JWT claims. It allows for the creation of expressive and flexible validation rules using a concise grammar. With this library, developers can define complex claim validation logic through logical operators and various claim checks, all without needing to modify code.</Description>
     <PackageReadmeFile>README.md</PackageReadmeFile>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/SubEthaSensOMatic/AW.ClaimsExpressions.git</RepositoryUrl>
-    <PackageProjectUrl>https://github.com/SubEthaSensOMatic/AW.ClaimsExpressions</PackageProjectUrl>
-    <PackageTags>JWT;Claims;OAuth;OIDC;ASP.NET Core;Authorization</PackageTags>
   </PropertyGroup>
 
   <ItemGroup>
