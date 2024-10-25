@@ -1,6 +1,6 @@
 # AW.ClaimsExpressions
 
-**AW.ClaimsExpressions** is a powerful library that offers a Domain-Specific Language (DSL) for dynamically validating JWT claims. It allows for the creation of expressive and flexible validation rules using a concise grammar. With this library, developers can define complex claim validation logic through logical operators and various claim checks, all without needing to modify code.
+**AW.ClaimsExpressions** is a library that offers a Domain-Specific Language (DSL) for dynamically validating JWT claims. It allows for the creation of expressive and flexible validation rules using a concise grammar. With this library, developers can define complex claim validation logic through logical operators and various claim checks, all without needing to modify code.
 
 ## Features
 
@@ -8,6 +8,15 @@
 * **Logical operators:** Supports `and`, `or`, and `not` for combining multiple conditions, enabling the creation of sophisticated rules.
 * **Flexible claim checks:** Perform checks for claims using operators like `=`, `<`, `>` , `<=`, `>=`, `contains`, `startsWith`, and `endsWith`.
 * **Compilation to C# Functions:** Converts DSL expressions into efficient C# functions, making claim validation both powerful and fast.
+
+## Installation
+
+You can add this library to your project via NuGet
+
+- [AW.ClaimsExpressions](https://www.nuget.org/packages/AW.ClaimsExpressions/)
+
+- [AW.ClaimsExpressions.AspNetCore](https://www.nuget.org/packages/AW.ClaimsExpressions.AspNetCore/)
+
 
 ## Grammar overview
 
@@ -147,3 +156,5 @@ public class SomeService
 }
 ```
 
+## License
+This project is licensed under the MIT License.
