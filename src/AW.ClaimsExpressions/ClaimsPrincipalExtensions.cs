@@ -6,6 +6,9 @@ namespace AW.ClaimsExpressions;
 
 public static class ClaimsPrincipalExtensions
 {
+    public static bool IsAuthenticated(ClaimsPrincipal p)
+        => p.Identities != null && p.Identities.Any() && p.Identities.All(i => i.IsAuthenticated);
+
     public static bool ExistsClaim(ClaimsPrincipal p, string claim)
     {
         if (p == null || p.Claims == null || p.Claims.Any() == false)

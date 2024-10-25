@@ -37,7 +37,7 @@ public static class Compiler
 
             // AST in C# umwandeln
             var code = new StringBuilder();
-            code.Append("p => (");
+            code.Append("p => AW.ClaimsExpressions.ClaimsPrincipalExtensions.IsAuthenticated(p) && (");
             BuildDotNetExpression(tree, code);
             code.Append(')');
 
